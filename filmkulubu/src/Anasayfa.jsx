@@ -12,48 +12,55 @@ import HataMesaji from './HataMesaji';
 const Anasayfa = () => {
   const { durum, gonder } = useContext(DiziKonteks);
   
+ 
   KancaVeriCek(durum, gonder); 
 
-  const { yukleniyor, hata, diziler, aktifSayfa, sayfaBoyutu, toplamSayfa, filtreler } = durum;
+  const { yukleniyor, hata, aktifSayfa, sayfaBoyutu, toplamSayfa, filtreler } = durum;
+  const { minPuan, dil, tur } = filtreler;
 
-  // Basit rating filtresi uygulama
-  const filtrelenmisDiziler = diziler.filter(dizi => 
-      (dizi.rating && dizi.rating.average >= filtreler.minPuan)
-  );
+  
+  const filtrelenmisDiziler = durum.diziler.filter(dizi => {
+    const diziPuani = dizi.rating?.average || 0;
+    const diziDili = dizi.language || '';
+    const diziTurleri = dizi.genres || [];
+    
+    const puanUygun = diziPuani >= minPuan;
+    const dilUygun = dil === 'Tümü' || diziDili === dil;
+    const turUygun = tur === 'Tümü' || diziTurleri.includes(tur);
 
-  // Sayfalama Mantığı
+    return puanUygun && dilUygun && turUygun;
+  });
+
+
   const baslangicIndeksi = (aktifSayfa - 1) * sayfaBoyutu;
   const bitisIndeksi = baslangicIndeksi + sayfaBoyutu;
   const gosterilecekDiziler = filtrelenmisDiziler.slice(baslangicIndeksi, bitisIndeksi);
 
   const tekrarDene = () => {
-    gonder({ type: 'SORGULAMA_AYARLA', payload: durum.sorgu }); 
+    gonder({ type: 'SET_QUERY', payload: durum.sorgu }); 
   };
   
-  const bosSonuc = !yukleniyor && !hata && diziler.length > 0 && filtrelenmisDiziler.length === 0;
-  const genelBosDurum = !yukleniyor && !hata && diziler.length === 0;
+  const bosSonuc = !yukleniyor && !hata && durum.diziler.length > 0 && filtrelenmisDiziler.length === 0;
+  const genelBosDurum = !yukleniyor && !hata && durum.diziler.length === 0;
 
   return (
-    <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '20px' }}>
-      <h1>🎬 Kampüs Film Kulübü</h1>
-      <header style={{ display: 'flex', gap: '20px', marginBottom: '20px' }}>
+    <div className="main-container">
+      <h1>🎬 Süleyman Demirel Üniversitesi Film Kulübü</h1>
+      <header className="header-panel">
+        {/* 4. Uygulama Akışı: Arama çubuğu ve filtreler üstte yer alır */}
         <AramaKutusu />
         <Filtreler />
       </header>
 
-      <div style={{ display: 'flex', gap: '20px' }}>
-        <section style={{ flex: 3 }}>
-          {/* Conditional Rendering: Yükleniyor */}
+      <div className="content-area">
+        <section className="list-section">
+          {/* 1. Conditional Rendering */}
           {yukleniyor && <Yukleyici />}
-
-          {/* Conditional Rendering: Hata */}
           {hata && <HataMesaji mesaj={hata} tekrarDene={tekrarDene} />}
+          {genelBosDurum && <div className="bos-mesaj">Aradığınız sorguya uygun dizi bulunamadı.</div>}
+          {bosSonuc && <div className="bos-mesaj">Filtrelerinize uygun dizi bulunamadı.</div>}
 
-          {/* Conditional Rendering: Boş Sonuç */}
-          {genelBosDurum && <div style={{ textAlign: 'center', padding: '50px' }}>Aradığınız sorguya uygun dizi bulunamadı.</div>}
-          {bosSonuc && <div style={{ textAlign: 'center', padding: '50px' }}>Filtrelerinize uygun dizi bulunamadı.</div>}
-
-          {/* Listeleme ve Sayfalama */}
+          {/* 4. Uygulama Akışı: 5. Sayfalama (Pagination) */}
           {!yukleniyor && !hata && gosterilecekDiziler.length > 0 && (
             <>
               <TVListesi diziler={gosterilecekDiziler} />
@@ -67,7 +74,8 @@ const Anasayfa = () => {
           )}
         </section>
 
-        <aside style={{ flex: 1 }}>
+        <aside className="watchlist-aside">
+          {/* 4. Uygulama Akışı: 4. Gösterime Girecekler: Sağda seçilen dizileri gösterir */}
           <IzlemeListesiPaneli />
         </aside>
       </div>

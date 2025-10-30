@@ -6,7 +6,11 @@ const baslangicDurumu = {
   hata: null,
   diziler: [],
   sorgu: 'friends', 
-  filtreler: { tur: '', dil: '', minPuan: 0 },
+  filtreler: { 
+    minPuan: 0,
+    dil: 'Tümü',  
+    tur: 'Tümü',  
+  },
   izlemeListesi: [], 
   aktifSayfa: 1,
   sayfaBoyutu: 6, 
@@ -32,30 +36,30 @@ const indirgeyici = (durum, eylem) => {
     case 'FETCH_HATA':
       return { ...durum, yukleniyor: false, hata: eylem.payload };
 
-    // Kullanıcı Eylemleri
-    case 'SORGULAMA_AYARLA':
-      return { ...durum, sorgu: eylem.payload };
-    case 'FILTRE_AYARLA':
+  
+    case 'SET_QUERY':
+      return { ...durum, sorgu: eylem.payload, aktifSayfa: 1 };
+    case 'SET_FILTERS':
       return { ...durum, filtreler: eylem.payload, aktifSayfa: 1 };
     
-    
-    case 'IZLEME_LISTESI_EKLE':
+    T, CLEAR_WATCHLIST
+    case 'ADD_WATCHLIST':
       if (durum.izlemeListesi.some(item => item.id === eylem.payload.id)) {
         return durum;
       }
       return { ...durum, izlemeListesi: [...durum.izlemeListesi, eylem.payload] };
-    case 'IZLEME_LISTESI_KALDIR':
+    case 'REMOVE_WATCHLIST':
       return { ...durum, izlemeListesi: durum.izlemeListesi.filter(item => item.id !== eylem.payload) };
-    case 'IZLEME_LISTESI_TEMIZLE':
+    case 'CLEAR_WATCHLIST':
       return { ...durum, izlemeListesi: [] };
       
-    // Sayfalamalar - bu kısmı ekledim (AI tarafından önerildi)
+
+    case 'SET_PAGE_SIZE':
+        const yeniToplamSayfa = Math.ceil(durum.diziler.length / eylem.payload);
+        return { ...durum, sayfaBoyutu: eylem.payload, toplamSayfa: yeniToplamSayfa, aktifSayfa: 1 };
     case 'SAYFA_AYARLA':
         if (eylem.payload < 1 || eylem.payload > durum.toplamSayfa) return durum;
         return { ...durum, aktifSayfa: eylem.payload };
-    case 'SAYFA_BOYUTU_AYARLA':
-        const yeniToplamSayfa = Math.ceil(durum.diziler.length / eylem.payload);
-        return { ...durum, sayfaBoyutu: eylem.payload, toplamSayfa: yeniToplamSayfa, aktifSayfa: 1 };
 
     default:
       return durum;

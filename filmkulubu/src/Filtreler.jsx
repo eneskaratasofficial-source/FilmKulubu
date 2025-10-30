@@ -1,13 +1,17 @@
 import React, { useContext } from 'react';
 import { DiziKonteks } from './DurumYoneticisi';
+import { TumTurler, TumDiller } from './sabitler'; 
 
 const Filtreler = () => {
   const { gonder, durum } = useContext(DiziKonteks);
 
-  const handleRatingChange = (e) => {
+  const handleFilterChange = (filtreAdi, deger) => {
     gonder({ 
-      type: 'FILTRE_AYARLA', 
-      payload: { ...durum.filtreler, minPuan: Number(e.target.value) } 
+      type: 'SET_FILTERS', 
+      payload: { 
+        ...durum.filtreler, 
+        [filtreAdi]: deger 
+      } 
     });
   };
 
@@ -16,7 +20,7 @@ const Filtreler = () => {
         <label>  </label>
       <label>  🔎   ✨ Min Puan:</label>
       <select 
-        onChange={handleRatingChange} 
+        onChange={(e) => handleFilterChange('minPuan', Number(e.target.value))} 
         value={durum.filtreler.minPuan}
         style={{ padding: '8px' }}
       >
@@ -25,7 +29,30 @@ const Filtreler = () => {
         <option value={8}>8.0 ve üzeri</option>
         <option value={9}>9.0 ve üzeri</option>
       </select>
-      {/* Tür ve Dil filtreleri buraya eklenebilir (AI ONERDI)*/}
+      
+     
+      <label>Dil:</label>
+      <select 
+        onChange={(e) => handleFilterChange('dil', e.target.value)} 
+        value={durum.filtreler.dil}
+        style={{ padding: '8px' }}
+      >
+        {TumDiller.map(dil => (
+          <option key={dil} value={dil}>{dil}</option>
+        ))}
+      </select>
+
+     
+      <label>Tür:</label>
+      <select 
+        onChange={(e) => handleFilterChange('tur', e.target.value)} 
+        value={durum.filtreler.tur}
+        style={{ padding: '8px' }}
+      >
+        {TumTurler.map(tur => (
+          <option key={tur} value={tur}>{tur}</option>
+        ))}
+      </select>
     </div>
   );
 };

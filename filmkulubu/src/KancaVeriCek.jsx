@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import axios from 'axios';
-//BU KISIM AI TARAFINDAN HAZIRLANDI...
+
 
 const KancaVeriCek = (durum, gonder) => {
   const { sorgu } = durum;
@@ -12,6 +12,7 @@ const KancaVeriCek = (durum, gonder) => {
       gonder({ type: 'FETCH_INIT' }); 
 
       try {
+        
         const sonuc = await axios.get(
           `https://api.tvmaze.com/search/shows?q=${sorgu}` 
         );

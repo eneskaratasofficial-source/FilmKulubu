@@ -3,17 +3,22 @@ import { DiziKonteks } from './DurumYoneticisi';
 
 const AramaKutusu = () => {
   const { gonder, durum } = useContext(DiziKonteks);
-  const [aramaMetni, setAramaMetni] = useState(durum.sorgu);
+  
+
+  const [aramaMetni, setAramaMetni] = useState(durum.sorgu); 
 
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault(); 
+    
     if (aramaMetni.trim()) {
-      gonder({ type: 'SORGULAMA_AYARLA', payload: aramaMetni });
+      
+      gonder({ type: 'SET_QUERY', payload: aramaMetni }); 
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} style={{ flex: 1 }}>
+   
+    <form onSubmit={handleSubmit} className="search-container">
       <input
         type="text"
         value={aramaMetni}
@@ -21,8 +26,8 @@ const AramaKutusu = () => {
         placeholder="Dizi adı ile arama yapın (örn: the office)"
         style={{ width: '100%', padding: '10px', fontSize: '16px' }}
       />
-      {/* Görünmez submit butonu */}
-      <button type="submit" style={{ display: 'none' }}>Ara</button>
+      {/* Arama butonu görünmez olsa bile submit işlemi için önemlidir */}
+      <button type="submit" style={{ display: 'none' }}>Ara</button> 
     </form>
   );
 };
