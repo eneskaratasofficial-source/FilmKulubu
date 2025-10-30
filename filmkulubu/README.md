@@ -1,1 +1,1 @@
-[Film Kulüp Sitesi](https://film-kulubu.vercel.app/)
+[Film Kulüp Sitesi](https://film-kulubu-xsno.vercel.app/)
