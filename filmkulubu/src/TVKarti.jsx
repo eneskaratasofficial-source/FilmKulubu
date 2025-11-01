@@ -13,7 +13,7 @@ const TVKarti = ({ dizi }) => {
     const izlemeListesineEkle = () => {
         gonder({ 
             type: 'ADD_WATCHLIST', 
-            // ✨ Düzeltildi: Eklenecek dizinin ID, isim ve resmi gönderilir
+            //  Düzeltildi: Eklenecek dizinin ID, isim ve resmi gönderilir bu kısım AI
             payload: { id: dizi.id, name: dizi.name, image: dizi.image } 
         });
     };
