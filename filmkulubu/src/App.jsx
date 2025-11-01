@@ -13,7 +13,7 @@ const App = () => {
           <Route path="/" element={<Anasayfa />} /> 
           <Route path="/detay/:id" element={<DiziDetay />} /> 
         </Routes>
-        <Altbilgi olusturanAd="[ENES KARATAŞ-2321032069]" /> 
+      ---  //FOOTER ALANINDA BURASI VAR BU SATIRA GEREK YOK <Altbilgi olusturanAd="[ENES KARATAŞ-2321032069]" /> ----
       </Router>
     </DurumYoneticisi>
   );
